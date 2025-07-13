@@ -16,7 +16,7 @@ AUDIO = BASE / "audio"
 # ---------- FUNÇÃO PARA EXIBIR IMAGEM ----------
 def mostrar_imagem(path):
     if path.exists():
-        imagem = Image.open(path).resize((600, 338))
+        imagem = Image.open(path).resize((800, 450))
         st.image(imagem)
 
 # ---------- FUNÇÃO PARA SOBREPOR SPRITE NO FUNDO ----------
