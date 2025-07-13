@@ -47,13 +47,13 @@ legendas = [
 # ---------- FUNÇÕES DE UTILIDADE ----------
 def mostrar_imagem(path):
     if path.exists():
-        imagem = Image.open(path).resize((1200, 676))
+        imagem = Image.open(path).resize((800, 451))
         st.image(imagem)
 
 def sobrepor_sprite(fundo_path, sprite_path):
     if fundo_path.exists() and sprite_path.exists():
-        fundo = Image.open(fundo_path).resize((1200, 676)).convert("RGBA")
-        sprite = Image.open(sprite_path).resize((1200, 676)).convert("RGBA")
+        fundo = Image.open(fundo_path).resize((800, 451)).convert("RGBA")
+        sprite = Image.open(sprite_path).resize((800, 451)).convert("RGBA")
         combinado = Image.alpha_composite(fundo, sprite)
         st.image(combinado)
 
