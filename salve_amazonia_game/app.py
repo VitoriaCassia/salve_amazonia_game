@@ -17,7 +17,7 @@ if "tela" not in st.session_state:
 
 # ----- TELA INICIAL ----- #
 if st.session_state.tela == "inicial":
-    st.image("fundos/img_inicial.png", use_column_width=True)
+    st.image("fundos/img_inicial.png", use_container_width=True)
     col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("🌱 Iniciar", key="btn_iniciar"):
