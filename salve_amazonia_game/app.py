@@ -49,7 +49,7 @@ def sobrepor_sprite(fundo_path, sprite_path):
         combinado = Image.alpha_composite(fundo, sprite)
         st.image(combinado)
 
-# ---------- FUNÇÃO PARA TOCAR MÚSICA DE FUNDO AUTOMÁTICA (sem botão) ----------
+# ---------- FUNÇÃO PARA TOCAR MÚSICA DE FUNDO AUTOMÁTICA ----------
 def tocar_musica_de_fundo():
     if not st.session_state.musica_tocando:
         musica = AUDIO / "musica_fundo.mp3"
@@ -71,7 +71,7 @@ def tocar_musica_vitoria():
 def legenda(texto):
     st.markdown(
         f"<div style='background-color:#ffffffcc; padding:10px; border-left: 5px solid green; border-radius:5px; "
-        f"font-size:24px; color:black; font-weight:bold;'>{texto}</div>",
+        f"font-size:24px; color:black; font-weight:bold; width:1200px; margin:0 auto;'>{texto}</div>",
         unsafe_allow_html=True
     )
 
@@ -105,13 +105,32 @@ elif st.session_state.tela == "fase1":
 
 # ---------- TELA FINAL ----------
 elif st.session_state.tela == "fim":
-    st.success("Parabéns! Você concluiu a fase com Kawana e protegeu a Amazônia! 🎉")
+    parabens_path = BASE / "parabens.png"
+    mostrar_imagem(parabens_path)
+
+    legenda("🎉 Parabéns! Você concluiu a fase com Kawana e protegeu a Amazônia!")
+
+    legenda("🌱 A preservação da seringueira é fundamental para a economia local, a sustentabilidade ambiental e a manutenção da cultura da Amazônia.")
+
+    legenda("📘 O projeto “Encauchados de Vegetais da Amazônia” vem proporcionando o desenvolvimento social de forma sustentável, em comunidades de índios, ribeirinhos, quilombolas e de assentados da reforma agrária, na Amazônia.")
+
+    st.markdown(
+        """
+        <div style='background-color:#ffffffcc; padding:10px; border-left: 5px solid green; border-radius:5px; 
+        font-size:20px; color:black; font-weight:bold; width:1200px; margin:0 auto; text-align: center;'>
+            🔗 <a href="https://alavoura.com.br/mulheres-da-amazonia-fabricam-produtos-a-partir-do-latex-nativo/" target="_blank">
+            Mulheres da Amazônia fabricam produtos a partir do látex nativo - A Lavoura
+            </a>
+        </div>
+        """, unsafe_allow_html=True
+    )
+
     col1, col2 = st.columns(2)
     with col1:
         if st.button("🔄 Voltar ao início"):
             st.session_state.tela = "inicio"
             st.session_state.sprite_index = 0
             st.session_state.musica_tocando = False
-        with col2:
-            if st.button("❌ Sair"):
-                st.stop()
+    with col2:
+        if st.button("❌ Sair"):
+            st.stop()
