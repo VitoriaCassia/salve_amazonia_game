@@ -71,7 +71,7 @@ def tocar_musica_vitoria():
 def legenda(texto):
     st.markdown(
         f"<div style='background-color:#ffffffcc; padding:10px; border-left: 5px solid green; border-radius:5px; "
-        f"font-size:20px; color:black; font-weight:bold;'>{texto}</div>",
+        f"font-size:24px; color:black; font-weight:bold;'>{texto}</div>",
         unsafe_allow_html=True
     )
 
