@@ -16,14 +16,14 @@ AUDIO = BASE / "audio"
 # ---------- FUNÇÃO PARA EXIBIR IMAGEM ----------
 def mostrar_imagem(path):
     if path.exists():
-        imagem = Image.open(path).resize((800, 450))
+        imagem = Image.open(path).resize((1920, 1080))
         st.image(imagem)
 
 # ---------- FUNÇÃO PARA SOBREPOR SPRITE NO FUNDO ----------
 def sobrepor_sprite(fundo_path, sprite_path):
     if fundo_path.exists() and sprite_path.exists():
-        fundo = Image.open(fundo_path).resize((800, 450)).convert("RGBA")
-        sprite = Image.open(sprite_path).resize((800, 450)).convert("RGBA")
+        fundo = Image.open(fundo_path).resize((1920, 1080)).convert("RGBA")
+        sprite = Image.open(sprite_path).resize((1920, 1080)).convert("RGBA")
         combinado = Image.alpha_composite(fundo, sprite)
         st.image(combinado)
 
