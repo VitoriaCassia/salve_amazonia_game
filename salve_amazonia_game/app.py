@@ -3,10 +3,10 @@ from pathlib import Path
 from PIL import Image
 import time
 
-# ---------- CONFIGURAÇÃO DA PÁGINA ----------
+# ---------- CONFIG PÁGINA ----------
 st.set_page_config(page_title="Salve a Amazônia", layout="wide")
 
-# ---------- CAMINHOS DAS PASTAS ----------
+# ---------- CAMINHOS ----------
 BASE = Path(__file__).parent
 FUNDOS = BASE / "fundos"
 FASES = BASE / "fases"
@@ -14,7 +14,7 @@ IMAGENS = BASE / "imagens"
 AUDIO = BASE / "audio"
 SPRITES = BASE / "sprites"
 
-# ---------- FUNÇÃO PARA TOCAR MÚSICA AUTOMÁTICA ----------
+# ---------- TOCAR MÚSICA FUNDO ----------
 def tocar_musica_automatica():
     audio_path = AUDIO / "musica_fundo.mp3"
     if audio_path.exists():
@@ -22,36 +22,36 @@ def tocar_musica_automatica():
             audio_bytes = audio_file.read()
             st.audio(audio_bytes, format="audio/mp3", start_time=0)
 
-# ---------- FUNÇÃO PARA EXIBIR LEGENDAS ----------
+# ---------- LEGENDAS COM ESTILO ----------
 def legenda(texto):
     st.markdown(
-        f"<div style='background-color:#ffffffcc; padding:10px; border-left: 5px solid green; border-radius:5px; font-size:18px'><strong>{texto}</strong></div>",
+        f"<div style='background-color:#ffffffcc; padding:10px; border-radius:8px; font-size:18px; color:black; font-weight:bold; text-align:center'>{texto}</div>",
         unsafe_allow_html=True
     )
 
-# ---------- FUNÇÃO PARA ANIMAÇÃO DA KAWANA COM SPRITES E LEGENDAS ----------
-def animacao_kawana_com_falas():
-    sprites = [
-        ("Kawane_latex1.png", "🌿 Use sempre instrumentos limpos para respeitar a natureza."),
-        ("Kawane_latex2.png", "🌱 Evite ferir profundamente a árvore da seringueira."),
-        ("Kawane_latex3.png", "🪣 Coletar com cuidado evita o desperdício e protege a floresta!"),
-        ("Kawane_latex4.png", "🌳 Pronto! Agora o látex pode ser armazenado com cuidado.")
-    ]
-    for img, fala in sprites:
-        path = SPRITES / img
-        if path.exists():
-            fundo = FASES / "fase1.png"
-            if fundo.exists():
-                fundo_img = Image.open(fundo).convert("RGBA")
-                sprite_img = Image.open(path).convert("RGBA").resize((250, 250))
-                fundo_img.paste(sprite_img, (300, 150), sprite_img)  # coordenada aproximada
-                st.image(fundo_img, use_column_width=True)
-            legenda(fala)
-            time.sleep(2)
+# ---------- MOSTRAR CENA COM SPRITE DA KAWANA E CAUE ----------
+def mostrar_cena_com_sprite(sprite_kawana):
+    fundo = FASES / "fase1.png"
+    sprite_path = SPRITES / sprite_kawana
+    caue_path = SPRITES / "caue_anotando.png"
 
-# ---------- ESTADO DA TELA ----------
+    if fundo.exists() and sprite_path.exists() and caue_path.exists():
+        fundo_img = Image.open(fundo).convert("RGBA")
+        kawana_img = Image.open(sprite_path).convert("RGBA").resize((250, 250))
+        caue_img = Image.open(caue_path).convert("RGBA").resize((250, 250))
+
+        # Kawana à esquerda da árvore
+        fundo_img.paste(kawana_img, (240, 270), kawana_img)
+        # Caue à direita da árvore
+        fundo_img.paste(caue_img, (520, 270), caue_img)
+
+        st.image(fundo_img, use_container_width=True)
+
+# ---------- ESTADO INICIAL ----------
 if "tela" not in st.session_state:
     st.session_state.tela = "inicial"
+if "etapa_kawana" not in st.session_state:
+    st.session_state.etapa_kawana = 0
 
 # ---------- TELA INICIAL ----------
 if st.session_state.tela == "inicial":
@@ -59,45 +59,57 @@ if st.session_state.tela == "inicial":
     if fundo_inicial.exists():
         st.image(str(fundo_inicial), use_container_width=True)
 
-    col1, col2, col3 = st.columns([1, 1, 1])
+    col1, col2 = st.columns([1, 1])
     with col1:
         btn_iniciar = IMAGENS / "btn_iniciar.png"
         if btn_iniciar.exists():
-            st.image(btn_iniciar, width=150)
-            if st.button("Iniciar 🌱"):
-                st.session_state.tela = "fase1"
+            st.image(str(btn_iniciar), width=180)
+        if st.button("Iniciar 🌱"):
+            st.session_state.tela = "fase1"
+            tocar_musica_automatica()
 
     with col2:
-        btn_audio = IMAGENS / "btn_audio.png"
-        if btn_audio.exists():
-            st.image(btn_audio, width=150)
-
-    with col3:
         btn_sair = IMAGENS / "btn_sair.png"
         if btn_sair.exists():
-            st.image(btn_sair, width=150)
-            if st.button("Sair ❌"):
-                st.stop()
+            st.image(str(btn_sair), width=180)
+        if st.button("Sair ❌"):
+            st.stop()
 
-# ---------- TELA FASE 1 ----------
+# ---------- FASE 1 ----------
 elif st.session_state.tela == "fase1":
-    tocar_musica_automatica()
     st.markdown("## 🎮 Fase 1: Aprendizado com Kawana")
 
-    # Kawana e Caue lado a lado
-    col_kawana, col_caue = st.columns(2)
-    with col_kawana:
-        animacao_kawana_com_falas()
+    falas = [
+        "🌿 Use sempre instrumentos limpos para respeitar a natureza.",
+        "🌱 Evite ferir profundamente a árvore da seringueira.",
+        "🪣 Coletar com cuidado evita o desperdício e protege a floresta!",
+        "🌳 Pronto! Agora o látex pode ser armazenado com cuidado."
+    ]
 
-    with col_caue:
-        caue = SPRITES / "caue_anotando.png"
-        if caue.exists():
-            st.image(str(caue), width=300)
+    sprites_kawana = [
+        "Kawane_latex1.png",
+        "Kawane_latex2.png",
+        "Kawane_latex3.png",
+        "Kawane_latex4.png"
+    ]
 
-    if st.button("Finalizar Fase 🎉"):
+    etapa = st.session_state.etapa_kawana
+    if etapa < len(sprites_kawana):
+        mostrar_cena_com_sprite(sprites_kawana[etapa])
+        legenda(falas[etapa])
+        if st.button("➡️ Próxima ação da Kawana"):
+            st.session_state.etapa_kawana += 1
+            st.experimental_rerun()
+    else:
+        # CENA FINAL DA FASE
+        mostrar_cena_com_sprite(sprites_kawana[-1])
+        legenda("🌳 Pronto! Agora o látex pode ser armazenado com cuidado.")
         vitoria = AUDIO / "vitoria.wav"
         if vitoria.exists():
-            st.audio(str(vitoria), format="audio/wav")
+            with open(vitoria, "rb") as audio_file:
+                st.audio(audio_file.read(), format="audio/wav", start_time=0)
         st.balloons()
-        st.success("Parabéns! Você aprendeu com a Kawana e Caue como proteger a Amazônia!")
-
+        st.markdown(
+            "<div style='background-color:#008000aa; color:white; font-size:22px; padding:20px; border-radius:8px; text-align:center'><strong>Parabéns! Você aprendeu com a Kawana e Caue como proteger a Amazônia!</strong></div>",
+            unsafe_allow_html=True
+        )
