@@ -1,38 +1,30 @@
 import streamlit as st
-import time
 from pathlib import Path
 
-# --- CONFIGURAÇÃO INICIAL ---
-st.set_page_config(page_title="Salve a Amazônia - Fase 1", layout="wide")
+# Caminhos das pastas
+IMG_FUNDOS = Path("fundos")
+IMG_AUDIO = Path("audio")
+IMG_BOTOES = Path("imagens")
+IMG_FASES = Path("fases")
+IMG_SPRITES = Path("sprites")
 
-# --- CAMINHOS PADRÃO COM PATHLIB ---
-ROOT = Path(__file__).parent.resolve()
-IMG_FUNDOS = ROOT / "fundos"
-IMG_IMAGENS = ROOT / "imagens"
-IMG_SPRITES = ROOT / "sprites"
-IMG_FASES = ROOT / "fases"
-AUDIO = ROOT / "audio"
+# Configuração da página
+st.set_page_config(page_title="Salve a Amazônia - Fase 1", layout="centered")
 
-# --- FUNÇÕES ---
-def tocar_audio(audio_path):
-    st.audio(str(audio_path), format='audio/mp3')
-
+# Função de legenda com destaque visual
 def mostrar_legenda(texto):
-    st.markdown(f"""
-        <div style='background-color:#e0ffe0;padding:10px;
-                    border-radius:10px;color:#004400;
-                    font-size:18px'>
-            {texto}
-        </div>""", unsafe_allow_html=True)
+    st.markdown(
+        f"<div style='background-color:#e0ffe0;padding:10px;border-radius:10px;color:#004400;font-size:18px'>{texto}</div>",
+        unsafe_allow_html=True
+    )
 
-# --- CONTROLE DE TELA ---
+# Controle de telas
 if "tela" not in st.session_state:
     st.session_state.tela = "inicial"
 
-# --- TELA INICIAL ---
+# Tela Inicial
 if st.session_state.tela == "inicial":
-    st.image(str(IMG_FUNDOS / "img_inicial.png"), use_container_width=True)
-
+    st.image(str(IMG_FUNDOS / "img_inicial.png"), width=900)
     col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("🌱 Iniciar", key="btn_iniciar"):
@@ -43,44 +35,30 @@ if st.session_state.tela == "inicial":
         if st.button("❌ Sair", key="btn_sair"):
             st.stop()
 
-# --- TELA DA FASE 1 ---
+# Fase 1
 elif st.session_state.tela == "fase1":
+    st.markdown("### 🎮 Fase 1: Extração Sustentável do Látex com Kawana e Caue")
     st.image(str(IMG_FASES / "fase1.png"), use_container_width=True)
 
-    st.markdown("### 🎮 Fase 1: Extração Sustentável do Látex com Kawana e Caue")
-    st.markdown("---")
-
-    col_audio, col_sair = st.columns([1, 1])
+    col_audio, col_voltar = st.columns(2)
     with col_audio:
         if st.button("🔊 Música de Fundo", key="btn_audio"):
-            tocar_audio(AUDIO / "musica_fundo.mp3")
-    with col_sair:
-        if st.button("🔙 Voltar ao Início", key="btn_voltar_inicio"):
+            st.audio(str(IMG_AUDIO / "musica_fundo.mp3"), format="audio/mp3")
+    with col_voltar:
+        if st.button("🔙 Voltar", key="btn_voltar_inicio"):
             st.session_state.tela = "inicial"
 
-    # Animação Kawana
-    st.subheader("🌿 Kawana ensina a extrair o látex da seringueira:")
-    sprites_kawana = [
-        "Kawane_latex1.png",
-        "Kawane_latex2.png",
-        "Kawane_latex3.png",
-        "Kawane_latex4.png"
-    ]
-    for sprite in sprites_kawana:
-        st.image(str(IMG_SPRITES / sprite), width=400)
-        time.sleep(0.8)
-
-    mostrar_legenda("Use sempre instrumentos limpos e respeite o tempo da árvore!")
-    mostrar_legenda("Evite cortar profundamente para não ferir a seringueira!")
+    st.markdown("---")
+    st.subheader("🌿 Kawana ensina com sabedoria:")
+    st.image([str(IMG_SPRITES / f"Kawane_latex{i}.png") for i in range(1, 5)], width=250)
+    mostrar_legenda("Use sempre instrumentos limpos e respeite o tempo da árvore.")
+    mostrar_legenda("Evite cortar profundamente para não ferir a seringueira.")
     mostrar_legenda("Recolha o látex com cuidado e evite desperdício.")
 
-    # Caue anotando
     st.subheader("📝 Caue está anotando tudo com atenção!")
-    st.image(str(IMG_SPRITES / "Caue_anotando.png"), width=300)
-
-    st.success("Você aprendeu com Kawana como proteger a floresta com sabedoria indígena!")
+    st.image(str(IMG_SPRITES / "Caue_anotando.png"), width=200)
 
     if st.button("🎉 Finalizar Fase", key="btn_finaliza"):
-        tocar_audio(AUDIO / "vitoria.wav")
+        st.audio(str(IMG_AUDIO / "vitoria.wav"), format="audio/wav")
+        st.success("Parabéns! Você concluiu a fase 1 com sucesso. 🌱")
         st.balloons()
-        st.markdown("### Parabéns! Você concluiu a fase 1 com sucesso. 🌱")
