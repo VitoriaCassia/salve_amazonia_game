@@ -1,101 +1,87 @@
 import streamlit as st
-import time
 from pathlib import Path
+import time
 
-# ===== CONFIGURAÇÃO =====
-st.set_page_config(page_title="Salve a Amazônia - Fase 1", layout="wide")
+# ---------- CONFIGURAÇÃO DA PÁGINA ----------
+st.set_page_config(page_title="Salve a Amazônia", layout="wide")
 
-# ===== CAMINHOS =====
-BASE = Path(__file__).parent
-IMG_FUNDOS = BASE / "fundos"
-IMG_FASES = BASE / "fases"
-IMG_BOTOES = BASE / "imagens"
-IMG_SPRITES = BASE / "sprites"
-AUDIO = BASE / "audio"
+# ---------- FUNÇÃO PARA TOCAR MÚSICA AUTOMÁTICA ----------
+def tocar_musica_automatica():
+    audio_path = AUDIO / "musica_fundo.mp3"
+    if audio_path.exists():
+        with open(audio_path, "rb") as audio_file:
+            audio_bytes = audio_file.read()
+            st.audio(audio_bytes, format="audio/mp3", start_time=0)
 
-# ===== FUNÇÕES =====
-def carregar_imagem(caminho, largura=None):
-    if caminho.exists():
-        st.image(str(caminho), width=largura, use_container_width=(largura is None))
-    else:
-        st.warning(f"⚠️ Imagem '{caminho.name}' não encontrada.")
-
-def tocar_audio(arquivo):
-    if arquivo.exists():
-        st.audio(str(arquivo), format="audio/mp3", start_time=0)
-    else:
-        st.warning(f"⚠️ Áudio '{arquivo.name}' não encontrado.")
-
-def mostrar_legenda(texto):
+# ---------- FUNÇÃO PARA EXIBIR LEGENDAS ----------
+def legenda(texto):
     st.markdown(
-        f"""
-        <div style='
-            background-color:#ffffffcc;
-            padding: 12px;
-            border-radius: 10px;
-            font-size:18px;
-            color: #004400;
-            font-weight: 500;
-            text-align: center;
-            border: 1px solid #88cc88;
-            margin: 10px 0;'>
-            {texto}
-        </div>
-        """,
+        f"<div style='background-color:#ffffffcc; padding:10px; border-left: 5px solid green; border-radius:5px; font-size:18px'><strong>{texto}</strong></div>",
         unsafe_allow_html=True
     )
 
-# ===== TELA ATUAL =====
+# ---------- FUNÇÃO PARA MOSTRAR SPRITES ----------
+def mostrar_animacao_kawana():
+    sprites = ["Kawane_latex1.png", "Kawane_latex2.png", "Kawane_latex3.png", "Kawane_latex4.png"]
+    for img in sprites:
+        path = SPRITES / img
+        if path.exists():
+            st.image(str(path), width=300)
+            time.sleep(1)
+
+# ---------- CAMINHOS DAS PASTAS ----------
+BASE = Path(__file__).parent
+FUNDOS = BASE / "fundos"
+FASES = BASE / "fases"
+IMAGENS = BASE / "imagens"
+AUDIO = BASE / "audio"
+SPRITES = BASE / "sprites"
+
+# ---------- ESTADO DA TELA ----------
 if "tela" not in st.session_state:
     st.session_state.tela = "inicial"
 
-# ===== TELA INICIAL =====
+# ---------- TELA INICIAL ----------
 if st.session_state.tela == "inicial":
-    carregar_imagem(IMG_FUNDOS / "img_inicial.png")
-
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        if st.button("🎮 Iniciar Jogo", key="btn_iniciar"):
-            st.session_state.tela = "fase1"
-    with col2:
-        st.markdown("Feito com carinho para salvar a Amazônia 🌳")
-    with col3:
-        if st.button("❌ Sair", key="btn_sair"):
-            st.stop()
-
-# ===== FASE 1 =====
-elif st.session_state.tela == "fase1":
-    # Música de fundo automática
-    tocar_audio(AUDIO / "musica_fundo.mp3")
-
-    # Exibe o cenário da fase
-    carregar_imagem(IMG_FASES / "fase1.png")
-
-    st.markdown("### 🧕 Kawana ensina a extrair o látex:")
-    sprites_kawana = [
-        ("Kawane_latex1.png", "🌿 Use sempre instrumentos limpos!"),
-        ("Kawane_latex2.png", "🌿 Evite cortes profundos na seringueira!"),
-        ("Kawane_latex3.png", "🌿 Recolha o látex com carinho e evite desperdício."),
-        ("Kawane_latex4.png", "🌿 Ensinar é cuidar da floresta para todos!")
-    ]
-
-    for sprite_nome, legenda in sprites_kawana:
-        st.image(str(IMG_SPRITES / sprite_nome), width=600)
-        mostrar_legenda(legenda)
-        time.sleep(1.0)
-
-    st.markdown("### ✍️ Caue está aprendendo tudo:")
-    carregar_imagem(IMG_SPRITES / "Caue_anotando.png", largura=400)
-    mostrar_legenda("📝 Caue está registrando tudo com atenção no caderno.")
-
-    st.success("Você aprendeu com Kawana como proteger a floresta! 🌳")
-
+    fundo_inicial = FUNDOS / "img_inicial.png"
+    if fundo_inicial.exists():
+        st.image(str(fundo_inicial), use_column_width=True)
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("🏠 Voltar ao início", key="btn_voltar_inicio"):
-            st.session_state.tela = "inicial"
+        btn_iniciar = IMAGENS / "btn_iniciar.png"
+        if btn_iniciar.exists() and st.button("Iniciar 🌱"):
+            st.session_state.tela = "fase1"
     with col2:
-        if st.button("✅ Finalizar Fase", key="btn_finalizar"):
-            tocar_audio(AUDIO / "vitoria.wav")
-            st.balloons()
-            st.success("Fase concluída com sucesso! 🎉")
+        btn_sair = IMAGENS / "btn_sair.png"
+        if btn_sair.exists() and st.button("Sair ❌"):
+            st.stop()
+
+# ---------- TELA FASE 1 ----------
+elif st.session_state.tela == "fase1":
+    tocar_musica_automatica()
+
+    fase1 = FASES / "fase1.png"
+    if fase1.exists():
+        st.image(str(fase1), use_column_width=True)
+
+    st.markdown("### 🎮 Fase 1: Aprendizado com Kawana")
+
+    col_kawana, col_caue = st.columns(2)
+    with col_kawana:
+        mostrar_animacao_kawana()
+    with col_caue:
+        caue = SPRITES / "Caue_anotando.png"
+        if caue.exists():
+            st.image(str(caue), width=300)
+
+    legenda("🌿 Use sempre instrumentos limpos para respeitar a natureza.")
+    legenda("🌱 Evite ferir profundamente a árvore da seringueira.")
+    legenda("🪣 Coletar com cuidado evita o desperdício e protege a floresta!")
+
+    if st.button("Finalizar Fase 🎉"):
+        vitoria = AUDIO / "vitoria.wav"
+        if vitoria.exists():
+            st.audio(str(vitoria), format="audio/wav")
+        st.balloons()
+        st.success("Parabéns! Você aprendeu com a Kawana e Caue como proteger a Amazônia!")
+
