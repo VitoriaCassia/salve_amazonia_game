@@ -83,7 +83,7 @@ if st.session_state.tela == "inicio":
         if st.button("🌳 Iniciar"):
             st.session_state.tela = "fase1"
             st.session_state.sprite_index = 0
-    with col2:
+    #with col2:
         if st.button("❌ Sair"):
             st.stop()
 
@@ -140,6 +140,6 @@ elif st.session_state.tela == "fim":
             st.session_state.tela = "inicio"
             st.session_state.sprite_index = 0
             st.session_state.musica_tocando = False
-    with col2:
+   # with col2:
         if st.button("❌ Sair"):
             st.stop()
