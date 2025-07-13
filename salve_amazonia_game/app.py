@@ -23,7 +23,7 @@ def mostrar_imagem(path):
 def sobrepor_sprite(fundo_path, sprite_path):
     if fundo_path.exists() and sprite_path.exists():
         fundo = Image.open(fundo_path).resize((800, 450)).convert("RGBA")
-        sprite = Image.open(sprite_path).resize((800, 450).convert("RGBA")
+        sprite = Image.open(sprite_path).resize((800, 450)).convert("RGBA")
         combinado = Image.alpha_composite(fundo, sprite)
         st.image(combinado)
 
