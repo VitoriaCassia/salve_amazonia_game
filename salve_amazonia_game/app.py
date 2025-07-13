@@ -90,12 +90,9 @@ if st.session_state.tela == "inicio":
 # ---------- TELA FASE 1 ----------
 elif st.session_state.tela == "fase1":
     fase1_path = FASES / "fase1.png"
-
     sprite_path = SPRITES / sprites_kawana[st.session_state.sprite_index]
     sobrepor_sprite(fase1_path, sprite_path)
-
     legenda(legendas[st.session_state.sprite_index])
-
     if st.button("▶️ Próxima ação da Kawana"):
         if st.session_state.sprite_index < len(sprites_kawana) - 1:
             st.session_state.sprite_index += 1
@@ -105,29 +102,37 @@ elif st.session_state.tela == "fase1":
 
 # ---------- TELA FINAL ----------
 elif st.session_state.tela == "fim":
-    fase1_path = FASES / "fase1.png"
-    parabens_path = SPRITES / "parabens.png"
-    if fase1_path.exists() and parabens_path.exists():
-        fundo = Image.open(fase1_path).resize((1200, 676)).convert("RGBA")
-        parabens = Image.open(parabens_path).resize((1200, 676)).convert("RGBA")
-        combinado = Image.alpha_composite(fundo, parabens)
-        st.image(combinado)
+    st.markdown("## 🎉 Fase concluída!")
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        parabens_path = SPRITES / "parabens.png"
+        if parabens_path.exists():
+            imagem = Image.open(parabens_path).resize((600, 338))
+            st.image(imagem)
 
-    legenda("🎉 Parabéns! Você concluiu a fase com Kawana e protegeu a Amazônia!")
-   # legenda("🌱 A preservação da seringueira é fundamental para a economia local, a sustentabilidade ambiental e a manutenção da cultura da Amazônia.")
-    legenda("📘 O projeto “Encauchados de Vegetais da Amazônia” vem proporcionando o desenvolvimento social de forma sustentável, em comunidades de índios, ribeirinhos, quilombolas e de assentados da reforma agrária, na Amazônia.")
+    with col2:
+        st.markdown(
+            """
+            <div style='background-color:#ffffffcc; padding:15px; border-left: 5px solid green; border-radius:5px; 
+            font-size:20px; color:black; font-weight:bold;'>
+                🎉 Parabéns! Você concluiu a fase com Kawana e protegeu a Amazônia!<br><br>
+                🌱 A preservação da seringueira é fundamental para a economia local, a sustentabilidade ambiental e a manutenção da cultura da Amazônia.<br><br>
+                📘 O projeto “Encauchados de Vegetais da Amazônia” vem proporcionando o desenvolvimento social de forma sustentável, 
+                em comunidades de índios, ribeirinhos, quilombolas e de assentados da reforma agrária, na Amazônia.
+            </div>
+            """, unsafe_allow_html=True
+        )
 
-    st.markdown(
-        """
-        <div style='background-color:#ffffffcc; padding:10px; border-left: 5px solid green; border-radius:5px; 
-        font-size:18px; color:black; font-weight:bold; width:1200px; margin:0 auto; text-align: center;'>
-            🔗 <a href="https://alavoura.com.br/colunas/organicos/sustentabilidade-organicos/mulheres-da-amazonia-fabricam-produtos-a-partir-do-latex-nativo/?utm_source=chatgpt.com" target="_blank">
-            Mulheres da Amazônia fabricam produtos a partir do látex nativo - A Lavoura
-            </a>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+        st.markdown(
+            """
+            <div style='background-color:#ffffffcc; padding:10px; border-left: 5px solid green; border-radius:5px; 
+            font-size:18px; color:black; font-weight:bold; text-align: center;'>
+                🔗 <a href="https://alavoura.com.br/colunas/organicos/sustentabilidade-organicos/mulheres-da-amazonia-fabricam-produtos-a-partir-do-latex-nativo/?utm_source=chatgpt.com" target="_blank">
+                Mulheres da Amazônia fabricam produtos a partir do látex nativo - A Lavoura
+                </a>
+            </div>
+            """, unsafe_allow_html=True
+        )
 
     col1, col2 = st.columns(2)
     with col1:
