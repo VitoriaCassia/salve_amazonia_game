@@ -1,6 +1,5 @@
 import streamlit as st
 from PIL import Image
-import time
 from pathlib import Path
 
 # ---------- CONFIGURAÇÃO DA PÁGINA ----------
@@ -91,22 +90,32 @@ if st.session_state.tela == "inicio":
 # ---------- TELA FASE 1 ----------
 elif st.session_state.tela == "fase1":
     fase1_path = FASES / "fase1.png"
-    sprite_path = SPRITES / sprites_kawana[st.session_state.sprite_index]
 
+    # Exibe sprite da Kawana sobre a fase1
+    sprite_path = SPRITES / sprites_kawana[st.session_state.sprite_index]
     sobrepor_sprite(fase1_path, sprite_path)
+
+    # Exibe legenda correspondente
     legenda(legendas[st.session_state.sprite_index])
 
     if st.button("▶️ Próxima ação da Kawana"):
         if st.session_state.sprite_index < len(sprites_kawana) - 1:
             st.session_state.sprite_index += 1
         else:
+            # Após o último sprite, vai para tela final com parabéns.png sobreposto
             st.session_state.tela = "fim"
             tocar_musica_vitoria()
 
 # ---------- TELA FINAL ----------
 elif st.session_state.tela == "fim":
+    # Mostra imagem parabéns.png como overlay
+    fase1_path = FASES / "fase1.png"
     parabens_path = BASE / "parabens.png"
-    mostrar_imagem(parabens_path)
+    if fase1_path.exists() and parabens_path.exists():
+        fundo = Image.open(fase1_path).resize((1200, 676)).convert("RGBA")
+        parabens = Image.open(parabens_path).resize((1200, 676)).convert("RGBA")
+        combinado = Image.alpha_composite(fundo, parabens)
+        st.image(combinado)
 
     legenda("🎉 Parabéns! Você concluiu a fase com Kawana e protegeu a Amazônia!")
 
@@ -122,7 +131,8 @@ elif st.session_state.tela == "fim":
             Mulheres da Amazônia fabricam produtos a partir do látex nativo - A Lavoura
             </a>
         </div>
-        """, unsafe_allow_html=True
+        """,
+        unsafe_allow_html=True
     )
 
     col1, col2 = st.columns(2)
