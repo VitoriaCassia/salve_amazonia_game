@@ -20,6 +20,16 @@ if "sprite_index" not in st.session_state:
 if "musica_tocando" not in st.session_state:
     st.session_state.musica_tocando = False
 
+# ---------- MAPA DE ÁUDIOS POR SPRITE ----------
+sprite_audio_map = {
+    "inicio": "salve.mp3",
+    "Kawane_latex1.png": "fala1.mp3",
+    "Kawane_latex2.png": "fala2.mp3",
+    "Kawane_latex3.png": "fala3.mp3",
+    "Kawane_latex4.png": "fala4.mp3",
+    "parabens": ["fala5.mp3", "fala6.mp3", "fala7.mp3"]
+}
+
 # ---------- SPRITES E LEGENDAS ----------
 sprites_kawana = [
     "Kawane_latex1.png",
@@ -34,39 +44,26 @@ legendas = [
     "🌳 Pronto! Agora o látex pode ser armazenado com cuidado."
 ]
 
-# ---------- FUNÇÃO PARA MOSTRAR IMAGEM ----------
+# ---------- FUNÇÕES DE UTILIDADE ----------
 def mostrar_imagem(path):
     if path.exists():
-        imagem = Image.open(path).resize((800, 451))
+        imagem = Image.open(path).resize((1200, 676))
         st.image(imagem)
 
-# ---------- FUNÇÃO PARA SOBREPOR SPRITES NO CENÁRIO ----------
 def sobrepor_sprite(fundo_path, sprite_path):
     if fundo_path.exists() and sprite_path.exists():
-        fundo = Image.open(fundo_path).resize((800, 451)).convert("RGBA")
-        sprite = Image.open(sprite_path).resize((800, 451)).convert("RGBA")
+        fundo = Image.open(fundo_path).resize((1200, 676)).convert("RGBA")
+        sprite = Image.open(sprite_path).resize((1200, 676)).convert("RGBA")
         combinado = Image.alpha_composite(fundo, sprite)
         st.image(combinado)
 
-# ---------- FUNÇÃO PARA TOCAR MÚSICA DE FUNDO AUTOMÁTICA ----------
-def tocar_musica_de_fundo():
-    if not st.session_state.musica_tocando:
-        musica = AUDIO / "musica_fundo.mp3"
-        if musica.exists():
-            with open(musica, "rb") as audio_file:
-                audio_bytes = audio_file.read()
-                st.audio(audio_bytes, format='audio/mp3', start_time=0)
-                st.session_state.musica_tocando = True
-
-# ---------- FUNÇÃO PARA TOCAR MÚSICA DE VITÓRIA ----------
-def tocar_musica_vitoria():
-    musica = AUDIO / "vitoria.wav"
-    if musica.exists():
-        with open(musica, "rb") as audio_file:
+def tocar_audio(nome_arquivo):
+    caminho = AUDIO / nome_arquivo
+    if caminho.exists():
+        with open(caminho, "rb") as audio_file:
             audio_bytes = audio_file.read()
-            st.audio(audio_bytes, format='audio/wav', start_time=0)
+            st.audio(audio_bytes, format="audio/mp3")
 
-# ---------- FUNÇÃO DE LEGENDA PERSONALIZADA ----------
 def legenda(texto):
     st.markdown(
         f"<div style='background-color:#ffffffcc; padding:10px; border-left: 5px solid green; border-radius:5px; "
@@ -76,34 +73,42 @@ def legenda(texto):
 
 # ---------- TELA INICIAL ----------
 if st.session_state.tela == "inicio":
-    tocar_musica_de_fundo()
     mostrar_imagem(FUNDOS / "img_inicial.png")
+    tocar_audio(sprite_audio_map["inicio"])  # Toca salve.mp3
+
     col1, col2 = st.columns(2)
     with col1:
         if st.button("🌳 Iniciar"):
             st.session_state.tela = "fase1"
             st.session_state.sprite_index = 0
-    #with col2:
-      #  if st.button("❌ Sair"):
-           # st.stop()
+   # with col2:
+    #    if st.button("❌ Sair"):
+         #   st.stop()
 
 # ---------- TELA FASE 1 ----------
 elif st.session_state.tela == "fase1":
     fase1_path = FASES / "fase1.png"
-    sprite_path = SPRITES / sprites_kawana[st.session_state.sprite_index]
+    sprite_atual = sprites_kawana[st.session_state.sprite_index]
+    sprite_path = SPRITES / sprite_atual
+
     sobrepor_sprite(fase1_path, sprite_path)
     legenda(legendas[st.session_state.sprite_index])
+
+    # Toca o áudio correspondente ao sprite
+    if sprite_atual in sprite_audio_map:
+        tocar_audio(sprite_audio_map[sprite_atual])
+
     if st.button("▶️ Próxima ação da Kawana"):
         if st.session_state.sprite_index < len(sprites_kawana) - 1:
             st.session_state.sprite_index += 1
         else:
             st.session_state.tela = "fim"
-            tocar_musica_vitoria()
 
 # ---------- TELA FINAL ----------
 elif st.session_state.tela == "fim":
     st.markdown("## 🎉 Fase concluída!")
     col1, col2 = st.columns([1, 1])
+
     with col1:
         parabens_path = SPRITES / "parabens.png"
         if parabens_path.exists():
@@ -126,13 +131,17 @@ elif st.session_state.tela == "fim":
         st.markdown(
             """
             <div style='background-color:#ffffffcc; padding:10px; border-left: 5px solid green; border-radius:5px; 
-            font-size:24px; color:black; font-weight:bold; text-align: center;'>
+            font-size:18px; color:black; font-weight:bold; text-align: center;'>
                 🔗 <a href="https://alavoura.com.br/colunas/organicos/sustentabilidade-organicos/mulheres-da-amazonia-fabricam-produtos-a-partir-do-latex-nativo/?utm_source=chatgpt.com" target="_blank">
                 Mulheres da Amazônia fabricam produtos a partir do látex nativo - A Lavoura
                 </a>
             </div>
             """, unsafe_allow_html=True
         )
+
+    # Toca os áudios da tela final (fala5, fala6, fala7)
+    for audio in sprite_audio_map["parabens"]:
+        tocar_audio(audio)
 
     col1, col2 = st.columns(2)
     with col1:
@@ -141,5 +150,5 @@ elif st.session_state.tela == "fim":
             st.session_state.sprite_index = 0
             st.session_state.musica_tocando = False
    # with col2:
-       # if st.button("❌ Sair"):
-        #    st.stop()
+     #   if st.button("❌ Sair"):
+         #   st.stop()
