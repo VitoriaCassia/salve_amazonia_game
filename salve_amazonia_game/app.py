@@ -1,91 +1,90 @@
 import streamlit as st
-from pathlib import Path
 import time
+from pathlib import Path
 
-# Configuração da Página
-st.set_page_config(page_title="Salve a Amazônia", layout="centered")
-st.title("🌿 Jogo Educativo: Salve a Amazônia")
+# ===== CONFIGURAÇÃO =====
+st.set_page_config(page_title="Salve a Amazônia - Fase 1", layout="wide")
 
-# Diretórios esperados
-IMG_FUNDOS = Path("fundos")
-IMG_FASES = Path("fases")
-IMG_SPRITES = Path("sprites")
-AUDIO = Path("audio")
+# ===== CAMINHOS =====
+BASE = Path(__file__).parent
+IMG_FUNDOS = BASE / "fundos"
+IMG_FASES = BASE / "fases"
+IMG_BOTOES = BASE / "imagens"
+IMG_SPRITES = BASE / "sprites"
+AUDIO = BASE / "audio"
 
-# Funções auxiliares
-def tocar_audio(caminho_audio):
-    if Path(caminho_audio).exists():
-        st.audio(str(caminho_audio), format='audio/mp3', autoplay=True)
+# ===== FUNÇÕES AUXILIARES =====
+def carregar_imagem(caminho):
+    if caminho.exists():
+        st.image(str(caminho), use_container_width=True)
     else:
-        st.warning(f"🎵 Arquivo de áudio não encontrado: {caminho_audio}")
+        st.warning(f"⚠️ Imagem '{caminho.name}' não encontrada.")
+
+def tocar_audio(arquivo):
+    if arquivo.exists():
+        st.audio(str(arquivo), format="audio/mp3", start_time=0)
+    else:
+        st.warning(f"⚠️ Áudio '{arquivo.name}' não encontrado.")
 
 def mostrar_legenda(texto):
-    st.markdown(f"<div style='background-color:#e8ffe8;padding:10px;border-radius:10px;color:#004400;font-size:18px;margin-top:10px'>{texto}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='background-color:#d4edda;padding:10px;border-radius:8px;color:#155724;font-size:18px'>{texto}</div>", unsafe_allow_html=True)
 
-# Estado inicial
+# ===== TELA ATUAL =====
 if "tela" not in st.session_state:
-    st.session_state.tela = "inicio"
-if "musica_tocando" not in st.session_state:
-    st.session_state.musica_tocando = False
+    st.session_state.tela = "inicial"
 
-# TELA INICIAL
-if st.session_state.tela == "inicio":
-    img_path = IMG_FUNDOS / "img_inicial.png"
-    if img_path.exists():
-        st.image(str(img_path), use_container_width=True)
-    else:
-        st.warning("Imagem 'img_inicial.png' não encontrada.")
-
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("▶️ Iniciar Jogo"):
-            st.session_state.tela = "fase1"
-            st.session_state.musica_tocando = False
-    with col2:
-        st.button("❌ Sair", on_click=st.stop)
-
-# TELA FASE 1
-elif st.session_state.tela == "fase1":
-    fase_img = IMG_FASES / "fase1.png"
-    if fase_img.exists():
-        st.image(str(fase_img), use_container_width=True)
-    else:
-        st.warning("Imagem 'fase1.png' não encontrada.")
-
-    st.markdown("### 🌱 Fase 1: Kawana ensina a extrair o látex")
-    st.divider()
-
-    # Música toca automaticamente na entrada
-    if not st.session_state.musica_tocando:
-        tocar_audio(AUDIO / "musica_fundo.mp3")
-        st.session_state.musica_tocando = True
+# ===== TELA INICIAL =====
+if st.session_state.tela == "inicial":
+    carregar_imagem(IMG_FUNDOS / "img_inicial.png")
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        if st.button("👩🏽‍🌾 Ver Kawana Ensinando"):
-            st.info("Kawana está explicando como extrair o látex corretamente!")
-            for i in range(1, 5):
-                sprite_path = IMG_SPRITES / f"Kawane_latex{i}.png"
-                if sprite_path.exists():
-                    st.image(str(sprite_path), width=400)
-                    time.sleep(0.8)
-                else:
-                    st.warning(f"Imagem {sprite_path} não encontrada.")
-            mostrar_legenda("🌿 Use sempre instrumentos limpos e respeite o tempo da árvore.")
-            mostrar_legenda("🌿 Evite cortar profundamente para não ferir a seringueira.")
-            mostrar_legenda("🌿 Recolha o látex com cuidado e evite desperdício.")
-
+        if st.button("🎮 Iniciar Jogo", key="btn_iniciar"):
+            st.session_state.tela = "fase1"
     with col2:
-        if st.button("📓 Ver Caue Anotando"):
-            img_caue = IMG_SPRITES / "Caue_anotando.png"
-            if img_caue.exists():
-                st.image(str(img_caue), width=300)
-                st.info("Caue está anotando tudo para compartilhar com sua comunidade!")
-            else:
-                st.warning("Imagem 'Caue_anotando.png' não encontrada.")
-
+        st.markdown("Feito com carinho para salvar a Amazônia 🌳")
     with col3:
-        if st.button("🎉 Finalizar Fase"):
+        if st.button("❌ Sair", key="btn_sair"):
+            st.stop()
+
+# ===== FASE 1 =====
+elif st.session_state.tela == "fase1":
+    carregar_imagem(IMG_FASES / "fase1.png")
+    st.subheader("🌱 Fase 1: Kawana ensina a extrair látex")
+
+    # Música toca automaticamente
+    tocar_audio(AUDIO / "musica_fundo.mp3")
+
+    # Kawana em animação
+    st.markdown("#### 🧕 Kawana mostra como extrair o látex:")
+    sprites_kawana = [
+        IMG_SPRITES / "Kawane_latex1.png",
+        IMG_SPRITES / "Kawane_latex2.png",
+        IMG_SPRITES / "Kawane_latex3.png",
+        IMG_SPRITES / "Kawane_latex4.png",
+    ]
+    for sprite in sprites_kawana:
+        carregar_imagem(sprite)
+        time.sleep(0.6)
+
+    mostrar_legenda("🌿 Use sempre instrumentos limpos!")
+    mostrar_legenda("🌿 Evite cortes profundos na seringueira!")
+    mostrar_legenda("🌿 Recolha o látex com carinho e evite desperdício.")
+
+    # Caue anotando
+    st.markdown("#### ✍️ Caue está aprendendo e anotando tudo:")
+    carregar_imagem(IMG_SPRITES / "Caue_anotando.png")
+
+    # Finalizar
+    st.success("Você aprendeu com Kawana como proteger a floresta! 🌳")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("🏠 Voltar ao início", key="btn_voltar_inicio"):
+            st.session_state.tela = "inicial"
+    with col2:
+        if st.button("✅ Finalizar Fase", key="btn_finalizar"):
             tocar_audio(AUDIO / "vitoria.wav")
-            st.success("Parabéns! Você concluiu a Fase 1 com sucesso!")
             st.balloons()
+            st.success("Fase concluída com sucesso! 🎉")
+
