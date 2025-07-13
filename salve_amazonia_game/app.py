@@ -100,3 +100,4 @@ elif st.session_state.tela == "fase1":
             st.audio(str(vitoria), format="audio/wav")
         st.balloons()
         st.success("Parabéns! Você aprendeu com a Kawana e Caue como proteger a Amazônia!")
+
