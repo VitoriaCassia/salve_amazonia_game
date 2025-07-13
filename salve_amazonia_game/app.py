@@ -38,14 +38,14 @@ legendas = [
 # ---------- FUNÇÃO PARA MOSTRAR IMAGEM ----------
 def mostrar_imagem(path):
     if path.exists():
-        imagem = Image.open(path).resize((600, 338))
+        imagem = Image.open(path).resize((1200, 676))
         st.image(imagem)
 
 # ---------- FUNÇÃO PARA SOBREPOR SPRITES NO CENÁRIO ----------
 def sobrepor_sprite(fundo_path, sprite_path):
     if fundo_path.exists() and sprite_path.exists():
-        fundo = Image.open(fundo_path).resize((600, 338)).convert("RGBA")
-        sprite = Image.open(sprite_path).resize((600, 338)).convert("RGBA")
+        fundo = Image.open(fundo_path).resize((1200, 676)).convert("RGBA")
+        sprite = Image.open(sprite_path).resize((1200, 676)).convert("RGBA")
         combinado = Image.alpha_composite(fundo, sprite)
         st.image(combinado)
 
@@ -71,7 +71,7 @@ def tocar_musica_vitoria():
 def legenda(texto):
     st.markdown(
         f"<div style='background-color:#ffffffcc; padding:10px; border-left: 5px solid green; border-radius:5px; "
-        f"font-size:20px; color:black; font-weight:bold;'>{texto}</div>",
+        f"font-size:24px; color:black; font-weight:bold;'>{texto}</div>",
         unsafe_allow_html=True
     )
 
