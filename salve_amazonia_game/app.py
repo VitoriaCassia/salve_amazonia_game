@@ -114,9 +114,7 @@ elif st.session_state.tela == "fim":
         st.image(combinado)
 
     legenda("🎉 Parabéns! Você concluiu a fase com Kawana e protegeu a Amazônia!")
-
-    legenda("🌱 A preservação da seringueira é fundamental para a economia local, a sustentabilidade ambiental e a manutenção da cultura da Amazônia.")
-
+   # legenda("🌱 A preservação da seringueira é fundamental para a economia local, a sustentabilidade ambiental e a manutenção da cultura da Amazônia.")
     legenda("📘 O projeto “Encauchados de Vegetais da Amazônia” vem proporcionando o desenvolvimento social de forma sustentável, em comunidades de índios, ribeirinhos, quilombolas e de assentados da reforma agrária, na Amazônia.")
 
     st.markdown(
