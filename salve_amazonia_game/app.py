@@ -122,7 +122,7 @@ elif st.session_state.tela == "fim":
     st.markdown(
         """
         <div style='background-color:#ffffffcc; padding:10px; border-left: 5px solid green; border-radius:5px; 
-        font-size:20px; color:black; font-weight:bold; width:1200px; margin:0 auto; text-align: center;'>
+        font-size:18px; color:black; font-weight:bold; width:1200px; margin:0 auto; text-align: center;'>
             🔗 <a href="https://alavoura.com.br/colunas/organicos/sustentabilidade-organicos/mulheres-da-amazonia-fabricam-produtos-a-partir-do-latex-nativo/?utm_source=chatgpt.com" target="_blank">
             Mulheres da Amazônia fabricam produtos a partir do látex nativo - A Lavoura
             </a>
