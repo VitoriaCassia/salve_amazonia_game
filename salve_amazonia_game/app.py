@@ -1,117 +1,137 @@
 import streamlit as st
 from PIL import Image
 import time
-from pathlib import Path
+import streamlit.components.v1 as components
+import base64
 
-# ---------- CONFIGURAÇÃO DA PÁGINA ----------
-st.set_page_config(page_title="Salve a Amazônia", layout="wide")
+# Configurações da página
+st.set_page_config(layout="centered", page_title="Salve a Amazônia", page_icon="🌳")
 
-# ---------- CAMINHOS DAS PASTAS ----------
-BASE = Path(__file__).parent
-FUNDOS = BASE / "fundos"
-FASES = BASE / "fases"
-SPRITES = BASE / "sprites"
-AUDIO = BASE / "audio"
+# Função para mostrar imagens com tamanho padronizado
+def mostrar_imagem(nome_arquivo):
+    imagem = Image.open(nome_arquivo)
+    st.image(imagem, use_column_width=False, width=600)
 
-# ---------- ESTADOS ----------
-if "tela" not in st.session_state:
-    st.session_state.tela = "inicio"
-if "sprite_index" not in st.session_state:
-    st.session_state.sprite_index = 0
-if "musica_tocando" not in st.session_state:
-    st.session_state.musica_tocando = False
+# Função para mostrar legenda com estilo padronizado
+def legenda(texto):
+    st.markdown(
+        f"""
+        <div style="background-color: rgba(255, 255, 255, 0.7);
+                    color: black;
+                    padding: 12px;
+                    font-size: 12pt;
+                    font-weight: bold;
+                    border-radius: 10px;
+                    text-align: center;
+                    width: 600px;
+                    margin: 0 auto;">
+            {texto}
+        </div>
+        """, unsafe_allow_html=True)
 
-# ---------- SPRITES E LEGENDAS ----------
+# Função para tocar áudio automaticamente
+def tocar_audio(arquivo_audio):
+    with open(arquivo_audio, "rb") as f:
+        audio_bytes = f.read()
+        b64 = base64.b64encode(audio_bytes).decode()
+        audio_html = f"""
+            <audio autoplay="true">
+                <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+            </audio>
+        """
+        st.markdown(audio_html, unsafe_allow_html=True)
+
+# Início da execução
+if "fase" not in st.session_state:
+    st.session_state.fase = 0
+if "indice_sprite" not in st.session_state:
+    st.session_state.indice_sprite = 0
+
+# Lista dos sprites da Kawana (em cima da fase1.png)
 sprites_kawana = [
     "Kawane_latex1.png",
     "Kawane_latex2.png",
     "Kawane_latex3.png",
-    "Kawane_latex4.png",
+    "Kawane_latex4.png"
 ]
+
+# Legendas associadas a cada sprite
 legendas = [
-    "🌱 Use sempre instrumentos limpos para respeitar a natureza.",
-    "🚫 Evite ferir profundamente a árvore da seringueira.",
-    "🧺 Coletar com cuidado evita o desperdício e protege a floresta!",
-    "🌳 Pronto! Agora o látex pode ser armazenado com cuidado."
+    "Use sempre instrumentos limpos para respeitar a natureza.",
+    "Evite ferir profundamente a árvore da seringueira.",
+    "Coletar com cuidado evita o desperdício e protege a floresta!",
+    "Pronto! Agora o látex pode ser armazenado com cuidado."
 ]
 
-# ---------- FUNÇÃO PARA MOSTRAR IMAGEM ----------
-def mostrar_imagem(path):
-    if path.exists():
-        imagem = Image.open(path).resize((1200, 676))
-        st.image(imagem)
+# Tela inicial com música de fundo automática
+if st.session_state.fase == 0:
+    tocar_audio("musica_fundo.mp3")
+    mostrar_imagem("tela_inicial.png")
+    
+    if st.button("Iniciar 🌱"):
+        st.session_state.fase = 1
 
-# ---------- FUNÇÃO PARA SOBREPOR SPRITES NO CENÁRIO ----------
-def sobrepor_sprite(fundo_path, sprite_path):
-    if fundo_path.exists() and sprite_path.exists():
-        fundo = Image.open(fundo_path).resize((1500, 676)).convert("RGBA")
-        sprite = Image.open(sprite_path).resize((1500, 676)).convert("RGBA")
-        combinado = Image.alpha_composite(fundo, sprite)
-        st.image(combinado)
+# Fase 1: Kawana e os ensinamentos
+elif st.session_state.fase == 1:
+    # Exibe a imagem do fundo (fase1)
+    mostrar_imagem("fase1.png")
+    
+    # Exibe sprite atual da Kawana sobre o fundo
+    sprite_atual = sprites_kawana[st.session_state.indice_sprite]
+    mostrar_imagem(sprite_atual)
 
-# ---------- FUNÇÃO PARA TOCAR MÚSICA DE FUNDO AUTOMÁTICA (sem botão) ----------
-def tocar_musica_de_fundo():
-    if not st.session_state.musica_tocando:
-        musica = AUDIO / "musica_fundo.mp3"
-        if musica.exists():
-            with open(musica, "rb") as audio_file:
-                audio_bytes = audio_file.read()
-                st.audio(audio_bytes, format='audio/mp3', start_time=0)
-                st.session_state.musica_tocando = True
-
-# ---------- FUNÇÃO PARA TOCAR MÚSICA DE VITÓRIA ----------
-def tocar_musica_vitoria():
-    musica = AUDIO / "vitoria.wav"
-    if musica.exists():
-        with open(musica, "rb") as audio_file:
-            audio_bytes = audio_file.read()
-            st.audio(audio_bytes, format='audio/wav', start_time=0)
-
-# ---------- FUNÇÃO DE LEGENDA PERSONALIZADA ----------
-def legenda(texto):
+    # Texto "Clique aqui!" acima do botão
     st.markdown(
-        f"<div style='background-color:#ffffffcc; padding:10px; border-left: 5px solid green; border-radius:5px; "
-        f"font-size:24px; color:black; font-weight:bold;'>{texto}</div>",
+        '<p style="text-align: center; color: white; font-size: 24px; font-weight: bold;">Clique aqui!</p>',
         unsafe_allow_html=True
     )
 
-# ---------- TELA INICIAL ----------
-if st.session_state.tela == "inicio":
-    tocar_musica_de_fundo()
-    mostrar_imagem(FUNDOS / "img_inicial.png")
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("🌳 Iniciar"):
-            st.session_state.tela = "fase1"
-            st.session_state.sprite_index = 0
-    with col2:
-        if st.button("❌ Sair"):
-            st.stop()
-
-# ---------- TELA FASE 1 ----------
-elif st.session_state.tela == "fase1":
-    fase1_path = FASES / "fase1.png"
-    sprite_path = SPRITES / sprites_kawana[st.session_state.sprite_index]
-
-    sobrepor_sprite(fase1_path, sprite_path)
-    legenda(legendas[st.session_state.sprite_index])
-
-    if st.button("▶️ Próxima ação da Kawana"):
-        if st.session_state.sprite_index < len(sprites_kawana) - 1:
-            st.session_state.sprite_index += 1
+    # Botão para avançar sprites
+    if st.button("➡️ Ver ação da Kawana"):
+        if st.session_state.indice_sprite < len(sprites_kawana) - 1:
+            st.session_state.indice_sprite += 1
         else:
-            st.session_state.tela = "fim"
-            tocar_musica_vitoria()
+            st.session_state.fase = 2  # ir para a próxima fase
+            st.session_state.indice_sprite = 0
 
-# ---------- TELA FINAL ----------
-elif st.session_state.tela == "fim":
-    st.success("Parabéns! Você concluiu a fase com Kawana e protegeu a Amazônia! 🎉")
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("🔄 Voltar ao início"):
-            st.session_state.tela = "inicio"
-            st.session_state.sprite_index = 0
-            st.session_state.musica_tocando = False
-        with col2:
-            if st.button("❌ Sair"):
-                st.stop()
+    # Legenda associada ao sprite
+    legenda(legendas[st.session_state.indice_sprite])
+
+# Fase final com imagem parabéns e texto educativo
+elif st.session_state.fase == 2:
+    mostrar_imagem("parabens.png")
+    tocar_audio("musica_vitoria.mp3")
+
+    legenda("Parabéns! Você concluiu a fase com Kawana e protegeu a Amazônia!")
+
+    st.markdown(
+        """
+        <div style="background-color: rgba(255, 255, 255, 0.7);
+                    color: black;
+                    padding: 12px;
+                    font-size: 12pt;
+                    font-weight: bold;
+                    border-radius: 10px;
+                    text-align: center;
+                    width: 600px;
+                    margin: 10px auto;">
+            A preservação da seringueira é fundamental para a economia local, a sustentabilidade ambiental e a manutenção da cultura da Amazônia.
+        </div>
+        <div style="background-color: rgba(255, 255, 255, 0.7);
+                    color: black;
+                    padding: 12px;
+                    font-size: 12pt;
+                    font-weight: bold;
+                    border-radius: 10px;
+                    text-align: center;
+                    width: 600px;
+                    margin: 10px auto;">
+            O projeto “Encauchados de Vegetais da Amazônia” vem proporcionando o desenvolvimento social de forma sustentável, em comunidades de índios, ribeirinhos, quilombolas e de assentados da reforma agrária, na Amazônia.
+            <br><br>
+            <a href="https://alavoura.com.br/mulheres-da-amazonia-fabricam-produtos-a-partir-do-latex-nativo/" target="_blank">🌿 Mulheres da Amazônia fabricam produtos a partir do látex nativo - A Lavoura</a>
+        </div>
+        """, unsafe_allow_html=True)
+
+    if st.button("🔄 Voltar ao Início"):
+        st.session_state.fase = 0
+        st.session_state.indice_sprite = 0
