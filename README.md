@@ -10,12 +10,12 @@
 Você acompanha **Kawana**, uma indígena guardiã da floresta, e **Caue**, um jovem defensor da natureza, 
 enquanto aprendem e ensinam sobre o **manejo sustentável da seringueira** e a **extração do látex nativo**.
 
-Temas abordados no jogo com foco em:
+Game com foco em:
 
 - 🌱 Educação ambiental
 - 💻 Letramento digital e programação
 - 🎨 Criatividade e narrativa cultural amazônica
-- 🔧 Simulação e prototipagem com Python e Streamlit
+- ✅ Refletir sobre sustentabilidade
 
 ---
 
