@@ -10,6 +10,26 @@
 Você acompanha **Kawana**, uma indígena guardiã da floresta, e **Caue**, um jovem defensor da natureza, 
 enquanto aprendem e ensinam sobre o **manejo sustentável da seringueira** e a **extração do látex nativo**.
 
+👩🏽‍🦱 Conheça Kawana, uma indígena forte, guardiã da floresta, símbolo de sabedoria e resistência.
+
+🧒🏽 E Caue, o protetor corajoso da Amazônia, que representa o compromisso das novas gerações com o planeta.
+
+🌳 O jogo ensina de forma lúdica e acessível o manejo sustentável do látex da seringueira, promovendo cultura,
+   inclusão digital e responsabilidade ambiental.
+   
+📲 A tecnologia pode — e deve — ser usada com propósito. Vamos codar ideias que protegem o futuro?
+
+🎮💡 Aprender protegendo a Amazônia? Sim, é possível!
+
+- - -  
+
+📚 Referência cultural
+
+🌿 O game é inspirado em projetos reais como os "Encauchados de Vegetais da Amazônia", que transformam o
+    látex nativo em renda e proteção da floresta, com protagonismo de mulheres indígenas e ribeirinhas.
+
+ - - -
+ 
 Game com foco em:
 
 - 🌱 Educação ambiental
